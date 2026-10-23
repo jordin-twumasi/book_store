@@ -71,16 +71,24 @@ def test_get_authors_returns_all_authors():
 #POST tests
 
 def test_creates_a_new_book(page: Page):
-    
-    page.goto("http://127.0.0.1:5001/books") #Navigate to books page
 
-    page.get_by_placeholder("Title").fill("The Chronicles of Narnia")
-    page.get_by_placeholder("Author").fill("C.S Lewis")
-    page.get_by_role("button", name = "Submit").click() # Fill in form and submit
+    #Authentication - must login first
+    def test_create_new_book(page: Page):
 
-    books = page.locator('li')
-    new_book = books.all_inner_texts()[-1] #final item
-    assert new_book == "The Chronicles of Narnia by C.S Lewis"
+      connection = DatabaseConnection()
+      connection.connect()
+      connection.execute("TRUNCATE TABLE users;")
+      connection.execute("INSERT INTO users (username, password) values ('test', '1234');")
 
+      page.goto("http://localhost:5001/sessions/new")
+      page.get_by_placeholder("username").fill("test")
+      page.get_by_placeholder("password").fill("1234")
+      page.get_by_role("button").click()
 
-    
+      page.goto("http://localhost:5001/books")
+      page.get_by_placeholder("Title").fill("The Chroicles of Geronimo (the cat)")
+      page.get_by_placeholder("Author").fill("Geronimo")
+      page.get_by_role("button", name="Submit").click()
+      books = page.locator('li')
+      new_book = books.all_inner_texts()[-1]
+      assert new_book == "The Chroicles of Geronimo (the cat) by Geronimo"

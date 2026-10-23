@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Films</title>
+    </head>
+    <body>
+        <form method = "POST", action="/films">
+            <label for="title">Title</label>
+            <input type = "text" name = "title" placeholder="Title"><br>
+
+            <label for = "release_year">Release Year</label>
+            <input type = "text" name = "release_year" placeholder="Release Year"><br>
+
+            <button type = "Submit">Submit</button>
+
+        </form>
+        <ul>
+            {% for film in films %}
+                <li> {{film.title}} - {{film.release_year}} </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
